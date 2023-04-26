@@ -1,37 +1,25 @@
-import { useRouter } from "next/router";
-import { getFilteredEvents } from "../../../dummy-data";
 import { EventsList } from "@/components/Events/EventsList";
 import { ResultsTitle } from "@/components/Events/ResultsTitle";
 import { Button } from "@/components/UI/Button/Button";
 import { ErrorAlert } from "@/components/UI/ErrorAlert/ErrorAlert";
+import { getFilteredEvents } from "@/helpers/api-util";
+import { Event } from "@/helpers/types";
 
-const FilteredEventsPage = () => {
-  const router = useRouter();
+type FilteredEventsPageProps = {
+  filteredEvents: Event[];
+  hasError: boolean;
+  date: {
+    year: number;
+    month: number;
+  };
+};
 
-  const filterData = router.query.slug;
-  const year = filterData && +filterData[0];
-  const month = filterData && +filterData[1];
-
-  const isFilteredDataValid =
-    filterData?.length === 2 &&
-    year &&
-    month &&
-    year > 2020 &&
-    month > 0 &&
-    month < 13;
-
-  const filteredEvents = isFilteredDataValid
-    ? getFilteredEvents({
-        year: +filterData[0],
-        month: +filterData[1],
-      })
-    : null;
-
-  if (!filterData) {
-    return <p className="center">Loading...</p>;
-  }
-
-  if (!isFilteredDataValid || !filteredEvents) {
+const FilteredEventsPage = ({
+  filteredEvents,
+  hasError,
+  date,
+}: FilteredEventsPageProps) => {
+  if (hasError) {
     return (
       <>
         <ErrorAlert>
@@ -47,6 +35,10 @@ const FilteredEventsPage = () => {
         </div>
       </>
     );
+  }
+
+  if (!filteredEvents) {
+    return <p className="center">Loading...</p>;
   }
 
   if (filteredEvents?.length === 0) {
@@ -69,10 +61,51 @@ const FilteredEventsPage = () => {
 
   return (
     <>
-      <ResultsTitle date={new Date(year, month - 1)} />
+      <ResultsTitle date={new Date(date.year, date.month - 1)} />
       <EventsList items={filteredEvents} />;
     </>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const { params } = context;
+
+  const filterData = params.slug;
+
+  const year = filterData && +filterData[0];
+  const month = filterData && +filterData[1];
+
+  const isFilteredDataValid =
+    filterData?.length === 2 &&
+    year &&
+    month &&
+    year > 2020 &&
+    month > 0 &&
+    month < 13;
+
+  if (!isFilteredDataValid) {
+    return {
+      props: {
+        hasError: true,
+      },
+    };
+  }
+
+  const filteredEvents = await getFilteredEvents({
+    year,
+    month,
+  });
+
+  return {
+    props: {
+      filteredEvents,
+      hasError: false,
+      date: {
+        year,
+        month,
+      },
+    },
+  };
 };
 
 export default FilteredEventsPage;

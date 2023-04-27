@@ -3,10 +3,19 @@ import { EventLogistics } from "@/components/EventDetails/EventLogistics";
 import { EventContent } from "@/components/EventDetails/EventContent";
 import { Event } from "@/helpers/types";
 import { getEventById, getFeaturedEvents } from "@/helpers/api-util";
+import Head from "next/head";
 
 const EventDetailPage = ({ event }: { event: Event }) =>
   event ? (
     <>
+      <Head>
+        <title>{event.title}</title>
+        <meta
+          name="
+      description"
+          content={event.description}
+        />
+      </Head>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}

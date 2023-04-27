@@ -4,6 +4,7 @@ import { Button } from "@/components/UI/Button/Button";
 import { ErrorAlert } from "@/components/UI/ErrorAlert/ErrorAlert";
 import { getFilteredEvents } from "@/helpers/api-util";
 import { Event } from "@/helpers/types";
+import Head from "next/head";
 
 type FilteredEventsPageProps = {
   filteredEvents: Event[];
@@ -19,9 +20,21 @@ const FilteredEventsPage = ({
   hasError,
   date,
 }: FilteredEventsPageProps) => {
+  const pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name="
+      description"
+        content={`All events for ${date.month}/${date.year}`}
+      />
+    </Head>
+  );
+
   if (hasError) {
     return (
       <>
+        {pageHeadData}
         <ErrorAlert>
           <p className="center">Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
@@ -38,12 +51,18 @@ const FilteredEventsPage = ({
   }
 
   if (!filteredEvents) {
-    return <p className="center">Loading...</p>;
+    return (
+      <>
+        {pageHeadData}
+        <p className="center">Loading...</p>;
+      </>
+    );
   }
 
   if (filteredEvents?.length === 0) {
     return (
       <>
+        {pageHeadData}
         <ErrorAlert>
           <p className="center">No events found for the chosen filter!</p>
         </ErrorAlert>
@@ -61,6 +80,7 @@ const FilteredEventsPage = ({
 
   return (
     <>
+      {pageHeadData}
       <ResultsTitle date={new Date(date.year, date.month - 1)} />
       <EventsList items={filteredEvents} />;
     </>

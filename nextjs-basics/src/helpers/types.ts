@@ -7,3 +7,11 @@ export type Event = {
   image: string;
   isFeatured: boolean;
 };
+
+export type Comment = {
+  id: string;
+  email: string;
+  name: string;
+  text: string;
+  eventId: string;
+};

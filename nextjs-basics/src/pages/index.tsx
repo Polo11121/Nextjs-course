@@ -5,8 +5,8 @@ import { NewsletterRegistration } from "@/components/Input/NewsletterRegistratio
 
 const HomePage = ({ featuredEvents }: { featuredEvents: Event[] }) => (
   <div>
-    <EventsList items={featuredEvents} />
     <NewsletterRegistration />
+    <EventsList items={featuredEvents} />
   </div>
 );
 

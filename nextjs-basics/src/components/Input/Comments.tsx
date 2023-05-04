@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { CommentList } from "@/components/Input/CommentList";
 import { NewComment } from "@/components/Input/NewComment";
 import { Comment } from "@/helpers/types";
+import { useNotificationContext } from "@/context/NotificationContext";
 import styles from "@/components/Input/Comments.module.css";
 
 export const Comments = ({ eventId }: { eventId: string }) => {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
+  const { toggleNotificationHandler } = useNotificationContext();
 
   const toggleCommentsHandler = () => {
     setShowComments((prevStatus) => !prevStatus);
@@ -17,26 +19,47 @@ export const Comments = ({ eventId }: { eventId: string }) => {
     name: string;
     text: string;
   }) => {
-    const response = await fetch(`/api/comments/${eventId}`, {
-      method: "POST",
-      body: JSON.stringify(commentData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await fetch(`/api/comments/${eventId}`, {
+        method: "POST",
+        body: JSON.stringify(commentData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    setComments((prevState) => [data.comment, ...prevState]);
+      setComments((prevState) => [data.comment, ...prevState]);
+
+      toggleNotificationHandler({
+        title: "Success",
+        message: "Successfully added comment!",
+        status: "success",
+      });
+    } catch (error) {
+      toggleNotificationHandler({
+        title: "Error",
+        message: "Something went wrong!",
+        status: "error",
+      });
+    }
   };
 
   useEffect(() => {
     if (showComments) {
       fetch(`/api/comments/${eventId}`)
         .then((response) => response.json())
-        .then((data) => setComments(data.comments));
+        .then((data) => setComments(data.comments))
+        .catch((error) => {
+          toggleNotificationHandler({
+            title: "Error",
+            message: "Something went wrong!",
+            status: "error",
+          });
+        });
     }
-  }, [showComments, eventId]);
+  }, [showComments, eventId, toggleNotificationHandler]);
 
   return (
     <section className={styles.comments}>

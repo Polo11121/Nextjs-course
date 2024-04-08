@@ -31,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { email } = session.user;
+  const email = session.user?.email;
 
   const client = await connectToDatabase();
 

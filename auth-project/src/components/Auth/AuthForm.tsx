@@ -55,7 +55,7 @@ export const AuthForm = () => {
         password: passwordValue,
       });
 
-      if (!result.error) {
+      if (result && !result.error) {
         // set some auth state
       }
 

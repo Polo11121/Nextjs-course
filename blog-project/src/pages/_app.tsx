@@ -1,12 +1,11 @@
 import Head from "next/head";
 import { Layout } from "@/components/UI/Layout/Layout";
-import { NextPage } from 'next';
 import "@/styles/globals.css";
 
 import type { AppProps } from "next/app";
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const ComponentWithPageProps = Component as NextPage;
+  const ComponentWithPageProps = Component as () => JSX.Element;
 
   return (
     <Layout>

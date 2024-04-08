@@ -3,7 +3,7 @@ import { Button } from "@/components/UI/Button/Button";
 import { DateIcon } from "@/components/Icons/DateIcon";
 import { AddressIcon } from "@/components/Icons/AddressIcon";
 import { ArrowRightIcon } from "@/components/Icons/ArrowRightIcon";
-import styles from "@/components/events/EventItem.module.css";
+import styles from "./EventItem.module.css";
 import Image from "next/image";
 
 type EventItemProps = Event;

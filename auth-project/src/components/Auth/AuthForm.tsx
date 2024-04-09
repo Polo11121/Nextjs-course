@@ -1,7 +1,7 @@
 import { FormEvent, useRef, useState } from "react";
 import { signIn } from "next-auth/client";
-import styles from "./AuthForm.module.css";
 import { useRouter } from "next/router";
+import styles from "./AuthForm.module.css";
 
 const createUser = async (email: string, password: string) => {
   const response = await fetch("/api/auth/signup", {
@@ -26,6 +26,7 @@ const createUser = async (email: string, password: string) => {
 
 export const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isAccountCreated, setIsAccountCreated] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -63,6 +64,12 @@ export const AuthForm = () => {
     } else {
       try {
         const result = await createUser(emailValue, passwordValue);
+
+        if (result && !result.error) {
+          // set some auth state
+        }
+        setIsLogin(true);
+        setIsAccountCreated(true);
       } catch (error) {
         console.log(error);
       }
@@ -83,6 +90,9 @@ export const AuthForm = () => {
         </div>
         <div className={styles.actions}>
           <button>{isLogin ? "Login" : "Create Account"}</button>
+          <div className={styles.toggle} style={{ pointerEvents: "none" }}>
+            Account created! Now you can login
+          </div>
           <button
             type="button"
             className={styles.toggle}

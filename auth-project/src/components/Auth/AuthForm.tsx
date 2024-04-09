@@ -90,9 +90,9 @@ export const AuthForm = () => {
         </div>
         <div className={styles.actions}>
           <button>{isLogin ? "Login" : "Create Account"}</button>
-          <div className={styles.toggle} style={{ pointerEvents: "none" }}>
+          {isAccountCreated &&  <div className={styles.toggle} style={{ pointerEvents: "none" }}>
             Account created! Now you can login
-          </div>
+          </div>}
           <button
             type="button"
             className={styles.toggle}
